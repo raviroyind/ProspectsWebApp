@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="ProspectDb" Class="ProspectDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=dell;Initial Catalog=ProspectDb;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="ProspectDbConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ProspectCommentSources" Member="ProspectCommentSources">
+    <Type Name="ProspectCommentSource">
+      <Column Name="ProspectCommentSourceID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProspectCommentSource" Member="ProspectCommentSource1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.UserInfo" Member="UserInfos">
+    <Type Name="UserInfo">
+      <Column Name="UserNo" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="CompanyName" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Address1" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Address2" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(60)" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="Zip" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="Phone" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="PhoneExt" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
+      <Column Name="Fax" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="RefCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="RefferedFrom" Type="System.String" DbType="NChar(3)" CanBeNull="true" />
+      <Column Name="Industry" Type="System.String" DbType="NChar(3)" CanBeNull="true" />
+      <Column Name="PromoCode" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="AdEmailSentOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CustID" Type="System.String" DbType="NVarChar(5)" CanBeNull="true" />
+      <Column Name="Reseller" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Column Name="MiddleInit" Type="System.String" DbType="NVarChar(2)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(21)" CanBeNull="true" />
+      <Column Name="AllowSecureFileUpload" Type="System.String" DbType="VarChar(1)" CanBeNull="true" />
+      <Column Name="AllowACA" Type="System.String" DbType="VarChar(1)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProspectCommentTypes" Member="ProspectCommentTypes">
+    <Type Name="ProspectCommentType">
+      <Column Name="ProspectCommentTypeID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProspectComment" Type="System.String" DbType="NVarChar(16)" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProspectConversations" Member="ProspectConversations">
+    <Type Name="ProspectConversation">
+      <Column Name="ConversationId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProspectId" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProspectComment" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ProspectCommentTypeID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProspectStageID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProspectCommentSourceID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="KeyPhrase" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="CreatedByUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProspectProspectStages" Member="ProspectProspectStages">
+    <Type Name="ProspectProspectStage">
+      <Column Name="ProspectStageID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProspectStage" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ProspectStageSequence" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Prospects" Member="Prospects">
+    <Type Name="Prospect">
+      <Column Name="ProspectId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Company" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ContactName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ContactEmail" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="ContactPhone" Type="System.String" DbType="NVarChar(16)" CanBeNull="true" />
+      <Column Name="ContactCity" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ContactState" Type="System.String" DbType="NVarChar(2)" CanBeNull="true" />
+      <Column Name="ContactTimeZone" Type="System.String" DbType="NVarChar(16)" CanBeNull="true" />
+      <Column Name="CreatedByUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
