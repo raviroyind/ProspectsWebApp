@@ -16,6 +16,7 @@ namespace ProspectsWebApp
 {
     public partial class Index : System.Web.UI.Page
     {
+        //Hard coded User Id, replace with session variable.
         public static readonly Guid UserId = new Guid("CF7C8C10-F16B-4746-9F05-3195682CA327");
 
         public enum SearchOn
@@ -64,12 +65,6 @@ namespace ProspectsWebApp
              
         }
 
-        private static List<Prospect> GetData(int startRowIndex, int maximumRows)
-        {
-            var dbContext = new ProspectDataContext();
-            return dbContext.Prospects.OrderBy(x => x.LastActivityDate).Skip(startRowIndex).Take(maximumRows).ToList();
-        }
-
         /// <summary>
         /// This method return a datatable with empty row.
         /// </summary>
@@ -104,6 +99,9 @@ namespace ProspectsWebApp
 
             var dcLastActivityDate = new DataColumn("LastActivityDate", typeof(System.String));
             dtProspect.Columns.Add(dcLastActivityDate);
+
+            var dcCreatedByUserId = new DataColumn("CreatedByUserId", typeof(System.Guid));
+            dtProspect.Columns.Add(dcCreatedByUserId);
 
             var datatRow = dtProspect.NewRow();
 
@@ -150,7 +148,15 @@ namespace ProspectsWebApp
             {
                 gvProspects.DataSource = ReturnEmptyDataTable();
                 gvProspects.DataBind();
+                lblMsg.Text = "No records found";
             }
+            else
+            {
+                lblMsg.Text = listProspects.Count + " records found.";
+            }
+
+            gvProspects.SelectedIndex = -1;
+            divComments.Style.Add(HtmlTextWriterStyle.Display, "none");
         }
 
         #endregion Functions...
@@ -170,6 +176,8 @@ namespace ProspectsWebApp
             spanProspectId.InnerText = string.Empty;
             gvComments.DataSource = ReturnEmptyDataTableComments();
             gvComments.DataBind();
+            divComments.Style.Add(HtmlTextWriterStyle.Display, "none");
+            lblMsg.Text = string.Empty;
         }
 
         protected void btnAddProspect_OnClick(object sender, EventArgs e)
@@ -202,6 +210,7 @@ namespace ProspectsWebApp
 
             dbContext.Prospects.InsertOnSubmit(dbProspect);
             dbContext.SubmitChanges();
+            lblMsg.Text = "Prospect for Company: " + txtCompanyAdd.Text + " added.";
 
             BindGrid(SearchOn.None);
             PopulateDropdowns();
@@ -218,7 +227,7 @@ namespace ProspectsWebApp
             if (!String.IsNullOrEmpty(id))
                 BindListOfProspects(Convert.ToInt32(id));
 
-            
+            lblMsg.Text = string.Empty;
         }
 
         protected void gvProspects_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -228,16 +237,19 @@ namespace ProspectsWebApp
                
                 var lblCreatedBy = (Label)e.Row.FindControl("lblCreatedBy");
 
-                if (lblCreatedBy != null)
+                if (lblCreatedBy != null )
                 {
-                    var dbContext = new ProspectDataContext();
-                    var userId = Guid.Parse(lblCreatedBy.Text);
+                    if (!string.IsNullOrEmpty(lblCreatedBy.Text))
+                    {
+                        var dbContext = new ProspectDataContext();
+                        var userId = Guid.Parse(lblCreatedBy.Text);
 
-                    var query = from c in dbContext.UserInfos
-                        where c.UserId.Equals(userId)
-                        select c.FirstName + " " + c.LastName;
+                        var query = from c in dbContext.UserInfos
+                            where c.UserId.Equals(userId)
+                            select c.FirstName + " " + c.LastName;
 
-                    lblCreatedBy.Text = query.First();
+                        lblCreatedBy.Text = query.First();
+                    }
                 }
             }
 
@@ -374,6 +386,7 @@ namespace ProspectsWebApp
                     BindGrid(SearchOn.ContactState, txtSearch.Text.ToLower());
                     break;
             }
+             
         }
 
 
@@ -384,11 +397,12 @@ namespace ProspectsWebApp
             txtSearch.Attributes.Add("placeholder", "Search...");
             BindGrid(SearchOn.None);
             PopulateDropdowns();
+            divComments.Style.Add(HtmlTextWriterStyle.Display, "none");
+            lblMsg.Text = string.Empty;
         }
 
 
         #endregion Search...
-
 
         #region Conversations...
 
@@ -406,7 +420,7 @@ namespace ProspectsWebApp
             }
 
             PopulateDropdownsProspectConversations();
-
+            divComments.Style.Add(HtmlTextWriterStyle.Display, "block");
 
         }
 
@@ -638,21 +652,66 @@ namespace ProspectsWebApp
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
+
                 var lblConversationId = (Label) e.Row.FindControl("lblConversationId");
 
                 if (lblConversationId != null)
                 {
-                    if (string.IsNullOrEmpty(lblConversationId.Text))
-                    {
-                        HtmlTextArea txtProspectComment = (HtmlTextArea) e.Row.FindControl("txtProspectComment");
-                        txtProspectComment.Visible = false;
+                    
+                    //Prospect Comment Div
+                    var hidProspectComment = (HiddenField)e.Row.FindControl("hidProspectComment");
 
-                        HtmlTextArea txtKeyPhrase = (HtmlTextArea) e.Row.FindControl("txtKeyPhrase");
-                        txtKeyPhrase.Visible = false;
+                    if (!string.IsNullOrEmpty(hidProspectComment.Value))
+                    {
+                        var hypProspectComment = (HyperLink)e.Row.FindControl("hypProspectComment");
+
+                        if (hidProspectComment.Value.Length > 20)
+                            hypProspectComment.Text = hidProspectComment.Value.Substring(0, 20);
+                        else hypProspectComment.Text = hidProspectComment.Value;
+
+                        var divProspectComment = (HtmlGenericControl)e.Row.FindControl("divProspectComment");
+                        divProspectComment.InnerHtml = hidProspectComment.Value;
+
+                        hypProspectComment.Attributes.Add("onclick",
+                            "toggleDiv(" + divProspectComment.ClientID + "," + hypProspectComment.ClientID + ");");
                     }
+
+                    //Key Phrase Div.
+                    var hidKeyPhrase = (HiddenField)e.Row.FindControl("hidKeyPhrase");
+
+                    if (!string.IsNullOrEmpty(hidKeyPhrase.Value))
+                    {
+                        var hypKeyPhrase = (HyperLink)e.Row.FindControl("hypKeyPhrase");
+                         
+                        if (hidKeyPhrase.Value.Length > 20)
+                            hypKeyPhrase.Text = hidKeyPhrase.Value.Substring(0, 20);
+                        else hypKeyPhrase.Text = hidKeyPhrase.Value;
+                         
+                        var divKeyPhrase = (HtmlGenericControl) e.Row.FindControl("divKeyPhrase");
+                        divKeyPhrase.InnerHtml = hidKeyPhrase.Value;
+
+                        hypKeyPhrase.Attributes.Add("onclick",
+                            "toggleDiv(" + divKeyPhrase.ClientID + "," + hypKeyPhrase.ClientID + ");");
+                    }
+
                 }
+                
 
                 var dbContext = new ProspectDataContext();
+
+                var lblCreatedBy = (Label)e.Row.FindControl("lblCreatedBy");
+
+                if (lblCreatedBy != null && !string.IsNullOrEmpty(lblCreatedBy.Text))
+                {
+                    var userId = Guid.Parse(lblCreatedBy.Text);
+
+                    var query = from c in dbContext.UserInfos
+                                where c.UserId.Equals(userId)
+                                select c.FirstName + " " + c.LastName;
+
+                    lblCreatedBy.Text = query.First();
+                }
+
 
                 //CommentType
                 var lblProspectCommentTypeId = (Label)e.Row.FindControl("lblProspectCommentTypeId");
@@ -713,8 +772,12 @@ namespace ProspectsWebApp
             }
         }
 
+        protected void gvComments_OnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
         #endregion Conversations...
 
-
+        
     }
 }

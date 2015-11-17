@@ -8,14 +8,11 @@
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <link href="https://code.jquery.com/ui/jquery-ui-git.css" rel="stylesheet"/>
+    <link href="css/jquery-ui.css" rel="stylesheet"  />
     <link href="css/bootstrap.min.css" rel="stylesheet" />
-   
-   
     <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <meta name="viewport" content="width=device-width" />
-  
-    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+<asp:ContentPlaceHolder runat="server" ID="HeadContent" />
 </head>
 <body>
 
@@ -52,15 +49,10 @@
            
        
     </div>
-     <footer class="navbar navbar-fixed-bottom navbar-inverse" >
-        <div class="footerMenu">
-            <div style="margin-right: 560px; float: left; margin-top: 10px;">
-                <span style="font-size: 0.8em; margin-top: 20%; margin-left: 25px;">Copyright <i class="glyphicon glyphicon-copyright-mark"></i></span>
-            </div>
-            <div style="margin-right: 25px; float: right; margin-top: 10px;">
-            </div>
-        </div>
+     <footer class="navbar navbar-fixed-bottom navbar-inverse" style="height:10px;" >
+        
     </footer>
+       
     </form>
 </body>
 </html>
